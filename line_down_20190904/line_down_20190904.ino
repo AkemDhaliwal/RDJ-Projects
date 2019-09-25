@@ -20,6 +20,7 @@ int sensorpin3Val  = 0;                 // variable to store the values from sen
 int modeSwitch = 0;           // variable to read mode switch
 int resetSwitch = 0;          //variable to read reset switch
 int totalTime = 0;
+bool dmdDisplayFLAG = false;
 int Tmins1 = 0;
 int Tmins10 = 0;
 int Tmins100 = 0;
@@ -35,6 +36,7 @@ void clockUpdate() {
   minsThousand = minutes / 100;
   minsHundred = minutes / 10;
   mins10 = minutes % 10;
+  
   mins1 = minutes;
   displayUpdate();
 //call button inttrupt and sensor read
@@ -46,7 +48,7 @@ void setup() {
   
   timer.disable();
   minutes = 0; seconds = 0;
-  TotalFlag = true; 
+  TotalFlag = false; 
   Serial.begin(9600);               // starts the serial monitor
   
   Timer1.initialize( 4000 );           //period in microseconds to call ScanDMD. Anything longer than 5000 (5ms) and you can see flicker.
@@ -70,7 +72,7 @@ void loop() {
       
       if (resetSwitch == LOW)   
       {
-        sec = 0;
+          sec = 0;
           mins1000 = 0;
           mins100 = 0;
           mins100 = 0;
@@ -80,22 +82,33 @@ void loop() {
           Tmins100 = 0;
           Tmins100 = 0;
           Tmins10 = 0;
-          Tmins1 = 0;
+          Tmins1 = 1;
       }
       if(modeSwitch == LOW)
       {
          if(TotalFlag == true)
           {
             TotalFlag = false;
+            if (sensorpin3Val  == LOW)//check switch (sensor is up)
+              {
+                dmdDisplayFLAG = false;
+              }
           }
           else
           {
-            TotalFlag = true;  
+            TotalFlag = true; 
+            dmdDisplayFLAG = true; 
           }
       }
       //change this for new output
       if (sensorpin3Val  == HIGH)//check switch (sensor is up)
       {
+        if(dmdDisplayFLAG == false)
+        {
+          mins1 = 1;
+          dmdDisplayFLAG = true;
+        }
+        //mins1 = 1;
         tempCount++;
       }
       else
@@ -105,6 +118,10 @@ void loop() {
         mins100 = 0;
         mins10 = 0;
         mins1 = 0;
+        if(TotalFlag == false)
+        {
+          dmdDisplayFLAG = false;  
+        }
       }
       if(tempCount > 0)
          {
@@ -148,21 +165,39 @@ void ScanDMD() {
   dmd.scanDisplayBySPI();
 }
 void displayUpdate() {
-  if (TotalFlag == false)
-  {
-    minsThousand = (String)mins1000;
-    minsHundred = (String)mins100;
-    minsTens = (String)mins10;
-    minsUnits = (String)mins1;
-  } 
-  else 
-  {
-    minsThousand = (String)Tmins1000;
-    minsHundred = (String)Tmins100;
-    minsTens = (String)Tmins10;
-    minsUnits = (String)Tmins1;
+  if(dmdDisplayFLAG == true)
+  {   
+    if (TotalFlag == false)
+    {
+      minsThousand = (String)mins1000;
+      minsHundred = (String)mins100;
+      minsTens = (String)mins10;
+      minsUnits = (String)mins1;
+    } 
+    else 
+    {
+      minsThousand = (String)Tmins1000;
+      minsHundred = (String)Tmins100;
+      minsTens = (String)Tmins10;
+      minsUnits = (String)Tmins1;
+    }
   }
-  if(mins1 == 1 or mins1 == 4)
+  else
+  {
+      minsThousand = " ";
+      minsHundred = " ";
+      minsTens =  " ";
+      minsUnits = " ";
+  }
+  
+  if(minsThousand == "0")
+      minsThousand = " ";
+  if(minsHundred == "0")
+      minsHundred = " ";
+  if(minsTens == "0")    
+      minsTens =  " ";
+      
+  if(mins1 == 1 or mins1 == 4 or Tmins1 == 1 or Tmins1 == 4)
   {
       dmd.drawString(0,1,minsThousand.c_str(),1,GRAPHICS_NORMAL);
       dmd.drawString(8,1,minsHundred.c_str(),1,GRAPHICS_NORMAL);
