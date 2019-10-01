@@ -1,0 +1,10 @@
+C:\RDJ Projects\RDJ-Projects\RDJ Reports\bin\Debug\RDJ Reports.exe.config
+C:\RDJ Projects\RDJ-Projects\RDJ Reports\bin\Debug\RDJ Reports.exe
+C:\RDJ Projects\RDJ-Projects\RDJ Reports\bin\Debug\RDJ Reports.pdb
+C:\RDJ Projects\RDJ-Projects\RDJ Reports\obj\Debug\RDJ Reports.csprojAssemblyReference.cache
+C:\RDJ Projects\RDJ-Projects\RDJ Reports\obj\Debug\RDJ_Reports.Form1.resources
+C:\RDJ Projects\RDJ-Projects\RDJ Reports\obj\Debug\RDJ_Reports.Properties.Resources.resources
+C:\RDJ Projects\RDJ-Projects\RDJ Reports\obj\Debug\RDJ Reports.csproj.GenerateResource.cache
+C:\RDJ Projects\RDJ-Projects\RDJ Reports\obj\Debug\RDJ Reports.exe
+C:\RDJ Projects\RDJ-Projects\RDJ Reports\obj\Debug\RDJ Reports.pdb
+C:\RDJ Projects\RDJ-Projects\RDJ Reports\obj\Debug\RDJ Reports.csproj.ResolveComReference.cache
