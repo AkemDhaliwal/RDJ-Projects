@@ -44,8 +44,8 @@ namespace RDJ_Reports
             {
                 if(!batchList.Contains(data.formulaNum))
                     batchList.Add(data.formulaNum);
-                if(!batchList.Contains(data.productNum))
-                    batchList.Add(data.formulaNum);
+                if(!prodList.Contains(data.productNum))
+                    prodList.Add(data.productNum);
             }
 
             rwData = new Excel(@"C:\RDJ Projects\RDJ-Projects\Reports\RDJ RW MO Production.xlsx", 1);
@@ -56,20 +56,23 @@ namespace RDJ_Reports
             startDateTime = startDate.Value.Date + startTime.Value.TimeOfDay;
             endDateTime = endDate.Value.Date + endTime.Value.TimeOfDay;
 
-
-
             int i = 5;
             bool count = true;
-            while(i < 500)
+            while(count)
             {
-                if ((DateTime)(rwData.Read(i, date)) < startDateTime)
+                if (DateTime.Compare((DateTime)(rwData.Read(i, date)), startDateTime) < 0)
                     count = false;
                 //rwData.stringRead(i, status) == "Closed" && 
                 if (rwData.stringRead(i, Line) == "L1" && rwData.Read(i, date) < endDateTime)
                 {
-                    if(batchList.Contains(rwData.intRead(i, item)))
+                    int test = 0;
+                    test = rwData.intRead(i, item);
+
+                    if (batchList.Contains(rwData.intRead(i, item)))
                     {
-                        if(rwData.stringRead(i, status) == "Closed")
+                        string val = "";
+                        val = rwData.stringRead(i, status);
+                        if (rwData.stringRead(i, status) == "Closed")
                         {
                             if (dataBatch.ContainsKey(rwData.intRead(i, item)))
                                 dataBatch[rwData.intRead(i, item)] = dataBatch[rwData.intRead(i, item)] + rwData.floatRead(i, quantity);
@@ -99,8 +102,8 @@ namespace RDJ_Reports
                 {
                     if(specinfo.formulaNum == item.Key && dataProduct.ContainsKey(specinfo.productNum))
                     {
-                        batchCases = specinfo.formulaNum;
-                        conversion = (dataProduct[specinfo.productNum]/ batchCases)*100;
+                        batchCases = specinfo.casesInBatc;
+                        conversion = (dataProduct[specinfo.productNum]/ (batchCases*item.Value))*100;
 
                         result += "Product Number   " + item.Key + "|| Conversion   " + conversion + "% \n";
                     }
