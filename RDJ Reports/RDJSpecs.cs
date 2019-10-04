@@ -13,7 +13,7 @@ namespace RDJ_Reports
     public class ReadRDJSpecsInfo
     {
         public List<RDJSpecInfo> line1 = new List<RDJSpecInfo>();
-        private RDJSpecInfo info = new RDJSpecInfo();
+        private RDJSpecInfo info;
         private int row = 2;
         private int prodNumCol = 1;
         private int prodDesCol = 2;
@@ -28,6 +28,7 @@ namespace RDJ_Reports
 
             for(row = 2; row < 219; row++)
             {
+                info = new RDJSpecInfo();
                 info.productNum = rdjSpecs.intRead(row, prodNumCol);
                 info.formulaNum = rdjSpecs.intRead(row, formulaNumCol);
                 info.casesInBatc = rdjSpecs.floatRead(row, casesCol);
