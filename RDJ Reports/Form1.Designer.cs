@@ -30,18 +30,21 @@
         {
             this.runtime = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.endTime = new System.Windows.Forms.DateTimePicker();
+            this.startTime = new System.Windows.Forms.DateTimePicker();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.endDate = new System.Windows.Forms.DateTimePicker();
+            this.startDate = new System.Windows.Forms.DateTimePicker();
+            this.button1 = new System.Windows.Forms.Button();
             this.genConvReport = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.button1 = new System.Windows.Forms.Button();
-            this.startDate = new System.Windows.Forms.DateTimePicker();
-            this.endDate = new System.Windows.Forms.DateTimePicker();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.startTime = new System.Windows.Forms.DateTimePicker();
-            this.endTime = new System.Windows.Forms.DateTimePicker();
+            this.errorMsg = new System.Windows.Forms.TextBox();
             this.runtime.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // runtime
@@ -59,6 +62,8 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.errorMsg);
+            this.tabPage1.Controls.Add(this.dataGridView1);
             this.tabPage1.Controls.Add(this.endTime);
             this.tabPage1.Controls.Add(this.startTime);
             this.tabPage1.Controls.Add(this.label3);
@@ -75,6 +80,104 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Conversion";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(24, 223);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(1254, 351);
+            this.dataGridView1.TabIndex = 1;
+            // 
+            // endTime
+            // 
+            this.endTime.AllowDrop = true;
+            this.endTime.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.endTime.CalendarTrailingForeColor = System.Drawing.Color.Green;
+            this.endTime.Checked = false;
+            this.endTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
+            this.endTime.Location = new System.Drawing.Point(342, 108);
+            this.endTime.Name = "endTime";
+            this.endTime.ShowUpDown = true;
+            this.endTime.Size = new System.Drawing.Size(88, 20);
+            this.endTime.TabIndex = 9;
+            // 
+            // startTime
+            // 
+            this.startTime.AllowDrop = true;
+            this.startTime.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.startTime.CalendarTrailingForeColor = System.Drawing.Color.Green;
+            this.startTime.Checked = false;
+            this.startTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
+            this.startTime.Location = new System.Drawing.Point(342, 61);
+            this.startTime.Name = "startTime";
+            this.startTime.ShowUpDown = true;
+            this.startTime.Size = new System.Drawing.Size(88, 20);
+            this.startTime.TabIndex = 8;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(566, 61);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(84, 16);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Line Number";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(92, 112);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(64, 16);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "End Date";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(92, 64);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(67, 16);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Start Date";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // endDate
+            // 
+            this.endDate.Location = new System.Drawing.Point(165, 108);
+            this.endDate.Name = "endDate";
+            this.endDate.Size = new System.Drawing.Size(149, 20);
+            this.endDate.TabIndex = 4;
+            // 
+            // startDate
+            // 
+            this.startDate.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.startDate.CalendarTrailingForeColor = System.Drawing.Color.Green;
+            this.startDate.Location = new System.Drawing.Point(165, 61);
+            this.startDate.Name = "startDate";
+            this.startDate.Size = new System.Drawing.Size(149, 20);
+            this.startDate.TabIndex = 3;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(741, 185);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(97, 20);
+            this.button1.TabIndex = 2;
+            this.button1.Text = "Live Data";
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // genConvReport
             // 
@@ -101,95 +204,14 @@
             this.tabPage2.Text = "Run Time";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // errorMsg
             // 
-            this.button1.Location = new System.Drawing.Point(741, 185);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(97, 20);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Live Data";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // startDate
-            // 
-            this.startDate.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.startDate.CalendarTrailingForeColor = System.Drawing.Color.Green;
-            this.startDate.Location = new System.Drawing.Point(165, 61);
-            this.startDate.Name = "startDate";
-            this.startDate.Size = new System.Drawing.Size(149, 20);
-            this.startDate.TabIndex = 3;
-            // 
-            // endDate
-            // 
-            this.endDate.Location = new System.Drawing.Point(165, 108);
-            this.endDate.Name = "endDate";
-            this.endDate.Size = new System.Drawing.Size(149, 20);
-            this.endDate.TabIndex = 4;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(92, 64);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(67, 16);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Start Date";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(92, 112);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(64, 16);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "End Date";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(566, 61);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(84, 16);
-            this.label3.TabIndex = 7;
-            this.label3.Text = "Line Number";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // startTime
-            // 
-            this.startTime.AllowDrop = true;
-            this.startTime.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.startTime.CalendarTrailingForeColor = System.Drawing.Color.Green;
-            this.startTime.Checked = false;
-            this.startTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-            this.startTime.Location = new System.Drawing.Point(342, 61);
-            this.startTime.Name = "startTime";
-            this.startTime.ShowUpDown = true;
-            this.startTime.Size = new System.Drawing.Size(88, 20);
-            this.startTime.TabIndex = 8;
-            // 
-            // endTime
-            // 
-            this.endTime.AllowDrop = true;
-            this.endTime.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.endTime.CalendarTrailingForeColor = System.Drawing.Color.Green;
-            this.endTime.Checked = false;
-            this.endTime.Format = System.Windows.Forms.DateTimePickerFormat.Time;
-            this.endTime.Location = new System.Drawing.Point(342, 108);
-            this.endTime.Name = "endTime";
-            this.endTime.ShowUpDown = true;
-            this.endTime.Size = new System.Drawing.Size(88, 20);
-            this.endTime.TabIndex = 9;
+            this.errorMsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.errorMsg.ForeColor = System.Drawing.Color.Red;
+            this.errorMsg.Location = new System.Drawing.Point(956, 4);
+            this.errorMsg.Name = "errorMsg";
+            this.errorMsg.Size = new System.Drawing.Size(321, 23);
+            this.errorMsg.TabIndex = 10;
             // 
             // Form1
             // 
@@ -203,6 +225,7 @@
             this.runtime.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -221,6 +244,8 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.DateTimePicker endTime;
         private System.Windows.Forms.DateTimePicker startTime;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.TextBox errorMsg;
     }
 }
 
