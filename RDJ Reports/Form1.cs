@@ -26,8 +26,6 @@ namespace RDJ_Reports
         IDictionary<int, float> requiredBatches;
         DataRow RowCal;
 
-
-
         public Form1()
         {
             InitializeComponent();
@@ -40,6 +38,7 @@ namespace RDJ_Reports
         {
             usedBatches = new Dictionary<int, float>();
             requiredBatches = new Dictionary<int, float>();
+            var lines = new List<string> {"L1", "L2", "L3", "L4","MIXING" };
             
             try
             {
@@ -58,7 +57,7 @@ namespace RDJ_Reports
 
                 connRWData.Open();
 
-                using (OleDbDataAdapter objDA1 = new System.Data.OleDb.OleDbDataAdapter("select[Item], [Status], [UM],[LP Quantity] from[Sheet1$] " +
+                using (OleDbDataAdapter objDA1 = new System.Data.OleDb.OleDbDataAdapter("select[Item], [Status], [UM],[LP Quantity],[Line] from[Sheet1$] " +
                     "WHERE[LP Reported At] BETWEEN #" + startDateTime + "# and #" + endDateTime + "#", connRWData))
                 {
                     objDA1.Fill(excelDataSetRW);
@@ -73,54 +72,65 @@ namespace RDJ_Reports
                 OleDbConnection connRDJSpecs = new OleDbConnection(ConnectionStringRDJSpecs);
 
                 connRDJSpecs.Open();
-
+                int j = 0;
                 //Go through each selected row of RW production Dataset
                 foreach (DataRow row in excelDataSetRW.Tables[0].Rows)
                 {
-                    if (row[2].ToString() == "BATCH")
+                    if (row[2].ToString() == "BATCH" && lines.Contains(row[4].ToString(), StringComparer.OrdinalIgnoreCase))
                     {
-                        if (!usedBatches.ContainsKey((int)row[0]))   //0 intex is Item Number
-                            usedBatches.Add((int)row[0], (float)row[3]); //3 index is quantity
+                        if (!usedBatches.ContainsKey(Int32.Parse(row[0].ToString())))   //0 intex is Item Number
+                            usedBatches.Add(Int32.Parse(row[0].ToString()), (float.Parse(row[3].ToString()))); //3 index is quantity
                         else
-                            usedBatches[(int)row[0]] = usedBatches[(int)row[0]] + (float)row[3];
+                            usedBatches[int.Parse(row[0].ToString())] = usedBatches[int.Parse(row[0].ToString())] + float.Parse(row[3].ToString());
 
-                        if(!requiredBatches.ContainsKey((int)row[0]))
-                            requiredBatches.Add((int)row[0], 0f); //3 index is quantity
+                        if(!requiredBatches.ContainsKey(int.Parse(row[0].ToString())))
+                            requiredBatches.Add(int.Parse(row[0].ToString()), 0f); //3 index is quantity
                     }
-                    if (row[2].ToString() == "CASE")
+                    if (row[2].ToString() == "CASE" && lines.Contains(row[4].ToString(), StringComparer.OrdinalIgnoreCase))
                     {
-                        using (OleDbDataAdapter objDA2 = new System.Data.OleDb.OleDbDataAdapter("select[Batch Number], [Yield] from[info]" +
-                            " WHERE [Internal Product Number] = #" + (int)row[0] + "#", connRDJSpecs))
+                        int num = Int32.Parse(row[0].ToString());
+                        using (OleDbDataAdapter objDA2 = new System.Data.OleDb.OleDbDataAdapter("select[Batch Number], [Yield] from[Sheet1$]" +
+                            " WHERE [Internal Product Number] = " + num , connRDJSpecs))
                         {
                             objDA2.Fill(excelDataSetSpecs);
                         }
-                        RowCal = excelDataSetSpecs.Tables[0].Rows[0];
+                        RowCal = excelDataSetSpecs.Tables[0].Rows[j];
 
-                        if (!requiredBatches.ContainsKey((int)RowCal[2]))//2 is index for formula num in ConversionFactInfo
-                            requiredBatches.Add((int)RowCal[2], 0f); //3 index is quantity
-
-                        requiredBatches[(int)RowCal[2]] = requiredBatches[(int)RowCal[2]] + (((float)row[3]) / ((float)RowCal[4]));
+                        if (!requiredBatches.ContainsKey(int.Parse(RowCal[0].ToString())))//2 is index for formula num in ConversionFactInfo
+                            requiredBatches.Add(int.Parse(RowCal[0].ToString()), 0f); //3 index is quantity
+                        
+                        requiredBatches[int.Parse(RowCal[0].ToString())] = requiredBatches[int.Parse(RowCal[0].ToString())] + ((float.Parse(row[3].ToString())) / (float.Parse(RowCal[1].ToString())));
+                        j++;
                     }
                 }
                 connRWData.Close();
                 connRWData.Dispose();
-
+                List<string> values = new List<string>();
                 int i = 0;
-                DataRow showRow = excelDataShow.Tables[0].NewRow();
-                showRow[0] = "Formula Number";
-                showRow[1] = "Product Description";
-                showRow[2] = "Conversion";
-                excelDataShow.Tables[0].Rows.Add(showRow);
+                excelDataShow.Tables.Add(new System.Data.DataTable());
+                excelDataShow.Tables[0].Columns.Add("Formula Number");
+                excelDataShow.Tables[0].Columns.Add("Description");
+                excelDataShow.Tables[0].Columns.Add("Conversion");
+                List<DataRow> showRow = new List<DataRow>();
+                   // excelDataShow.Tables[0].NewRow()>;
+
                 foreach (KeyValuePair<int, float> item in usedBatches)
                 {
-                    showRow[0] = item.Key;
-                    showRow[1] = "  ";
-                    showRow[2] = (int)Math.Round((double)(100 * (requiredBatches[item.Key] /item.Value)));
-                    excelDataShow.Tables[0].Rows.Add(showRow);
+                    showRow.Add(excelDataShow.Tables[0].NewRow());
+
+                    values.Add(item.Key.ToString());
+                    values.Add("  ");
+                    values.Add(((int)Math.Round((double)(100 * (requiredBatches[item.Key]/item.Value)))).ToString());
+
+                    showRow[i].ItemArray = values.ToArray();
+
+                    excelDataShow.Tables[0].Rows.Add(showRow[i]);
+                    values.RemoveRange(0, 3);
+                    i++;
                 }
                 dataGridView1.DataSource = excelDataShow.Tables[0];
             }
-            catch
+            catch(Exception exception)
             {
                 errorMsg.Text = "Error in Data";
             }
