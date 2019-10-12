@@ -24,6 +24,7 @@ namespace RDJ_Reports
         List<int> prodList = new List<int>();
         IDictionary<int, float> usedBatches;
         IDictionary<int, float> requiredBatches;
+        IDictionary<int, string> batchDescription;
         DataRow RowCal;
 
         public Form1()
@@ -38,6 +39,8 @@ namespace RDJ_Reports
         {
             usedBatches = new Dictionary<int, float>();
             requiredBatches = new Dictionary<int, float>();
+            batchDescription = new Dictionary<int, string>();
+
             var lines = new List<string> {"L1", "L2", "L3", "L4","MIXING" };
             
             try
@@ -57,7 +60,7 @@ namespace RDJ_Reports
 
                 connRWData.Open();
 
-                using (OleDbDataAdapter objDA1 = new System.Data.OleDb.OleDbDataAdapter("select[Item], [Status], [UM],[LP Quantity],[Line] from[Sheet1$] " +
+                using (OleDbDataAdapter objDA1 = new System.Data.OleDb.OleDbDataAdapter("select[Item], [Status], [UM],[LP Quantity],[Line], [Item Description] from[Sheet1$] " +
                     "WHERE[LP Reported At] BETWEEN #" + startDateTime + "# and #" + endDateTime + "#", connRWData))
                 {
                     objDA1.Fill(excelDataSetRW);
@@ -79,7 +82,10 @@ namespace RDJ_Reports
                     if (row[2].ToString() == "BATCH" && lines.Contains(row[4].ToString(), StringComparer.OrdinalIgnoreCase))
                     {
                         if (!usedBatches.ContainsKey(Int32.Parse(row[0].ToString())))   //0 intex is Item Number
+                        {
                             usedBatches.Add(Int32.Parse(row[0].ToString()), (float.Parse(row[3].ToString()))); //3 index is quantity
+                            batchDescription.Add(Int32.Parse(row[0].ToString()), (row[5].ToString()));
+                        }
                         else
                             usedBatches[int.Parse(row[0].ToString())] = usedBatches[int.Parse(row[0].ToString())] + float.Parse(row[3].ToString());
 
@@ -119,7 +125,7 @@ namespace RDJ_Reports
                     showRow.Add(excelDataShow.Tables[0].NewRow());
 
                     values.Add(item.Key.ToString());
-                    values.Add("  ");
+                    values.Add(batchDescription[item.Key]);
                     values.Add(((int)Math.Round((double)(100 * (requiredBatches[item.Key]/item.Value)))).ToString());
 
                     showRow[i].ItemArray = values.ToArray();
