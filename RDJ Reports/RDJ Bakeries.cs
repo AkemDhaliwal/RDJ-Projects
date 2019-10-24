@@ -22,25 +22,34 @@ namespace RDJ_Reports
 
         List<int> batchList = new List<int>();
         List<int> prodList = new List<int>();
+        List<DisplayInfo> info = new List<DisplayInfo>();
+        
         IDictionary<int, float> usedBatches;
         IDictionary<int, float> requiredBatches;
         IDictionary<int, string> batchDescription;
+        IDictionary<int, string> finalProdInfo;
         DataRow RowCal;
+        DataRow RowCal1;
 
+        DataSet excelDataSetRW = new DataSet();
+        DataSet excelDataSetSpecs = new DataSet();
+        DataSet excelDataSetSpecs2 = new DataSet();
+        DataSet excelDataSetSpecsAss = new DataSet();
+        DataSet excelDataShow = new DataSet();
+        
         public Form1()
         {
             InitializeComponent();
             startTime.CustomFormat = "hh:mm";
             endTime.CustomFormat = "hh:mm";
-
         }
-      
+
         private void genConvReport_Click(object sender, EventArgs e)
         {
             usedBatches = new Dictionary<int, float>();
             requiredBatches = new Dictionary<int, float>();
             batchDescription = new Dictionary<int, string>();
-
+            finalProdInfo = new Dictionary<int, string>();
             var lines = new List<string> {"L1", "L2", "L3", "L4","MIXING" };
             
             try
@@ -48,11 +57,6 @@ namespace RDJ_Reports
                 //Read RW Production data depnding on start and end date and store it in a Dataset object
                 startDateTime = startDate.Value.Date + startTime.Value.TimeOfDay;
                 endDateTime = endDate.Value.Date + endTime.Value.TimeOfDay;
-
-                DataSet excelDataSetRW = new DataSet();
-                DataSet excelDataSetSpecs = new DataSet();
-                DataSet excelDataSetSpecsAss = new DataSet();
-                DataSet excelDataShow = new DataSet();
 
                 string ConnectionStringRWData = String.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0}; Extended Properties='Excel 12.0; HDR=Yes'",
                     @"C:\RDJ Projects\Reports\RDJ RW MO Production.xlsx");
@@ -78,6 +82,7 @@ namespace RDJ_Reports
                 connRDJSpecs.Open();
                 int j = 0;
                 int i = 0;
+                int k = 0;
                 //Go through each selected row of RW production Dataset
                 foreach (DataRow row in excelDataSetRW.Tables[0].Rows)
                 {
@@ -97,18 +102,36 @@ namespace RDJ_Reports
                     else if (row[2].ToString() == "CASE" && lines.Contains(row[4].ToString(), StringComparer.OrdinalIgnoreCase))
                     {
                         int num = Int32.Parse(row[0].ToString());
-                        using (OleDbDataAdapter objDA2 = new System.Data.OleDb.OleDbDataAdapter("select[Batch Number], [Yield] from[Sheet1$]" +
-                            " WHERE [Internal Product Number] = " + num , connRDJSpecs))
+                        if (num > 70000000)
                         {
-                            objDA2.Fill(excelDataSetSpecs); 
-                        }
-                        RowCal = excelDataSetSpecs.Tables[0].Rows[j];
+                            using (OleDbDataAdapter objDA3 = new System.Data.OleDb.OleDbDataAdapter("select[Batch Number], [Weight per Case], [Finished Kilos per batch] from[Sheet2$]" + " WHERE [Internal Product Number] = " + num, connRDJSpecs))
+                            {
+                                objDA3.Fill(excelDataSetSpecs2);
+                            }
+                            k = excelDataSetSpecs2.Tables[0].Rows.Count-1;
+                            RowCal1 = excelDataSetSpecs2.Tables[0].Rows[k];
 
-                        if (!requiredBatches.ContainsKey(int.Parse(RowCal[0].ToString())))//2 is index for formula num in ConversionFactInfo
-                            requiredBatches.Add(int.Parse(RowCal[0].ToString()), 0f); //3 index is quantity
-                        
-                        requiredBatches[int.Parse(RowCal[0].ToString())] = requiredBatches[int.Parse(RowCal[0].ToString())] + ((float.Parse(row[3].ToString())) / (float.Parse(RowCal[1].ToString())));
-                        j++;
+                            if (!requiredBatches.ContainsKey(int.Parse(RowCal1[0].ToString())))//2 is index for formula num in ConversionFactInfo
+                                requiredBatches.Add(int.Parse(RowCal1[0].ToString()), 0f); //3 index is quantity
+
+                            requiredBatches[int.Parse(RowCal1[0].ToString())] = requiredBatches[int.Parse(RowCal1[0].ToString())] + (((float.Parse(row[3].ToString()))* (float.Parse(RowCal1[1].ToString()))) / (float.Parse(RowCal1[2].ToString())));
+                            
+                        }
+                        else
+                        {
+                            using (OleDbDataAdapter objDA2 = new System.Data.OleDb.OleDbDataAdapter("select[Batch Number], [Yield] from[Sheet1$]" +
+                                " WHERE [Internal Product Number] = " + num, connRDJSpecs))
+                            {
+                                objDA2.Fill(excelDataSetSpecs);
+                            }
+                            RowCal = excelDataSetSpecs.Tables[0].Rows[j];
+
+                            if (!requiredBatches.ContainsKey(int.Parse(RowCal[0].ToString())))//2 is index for formula num in ConversionFactInfo
+                                requiredBatches.Add(int.Parse(RowCal[0].ToString()), 0f); //3 index is quantity
+
+                            requiredBatches[int.Parse(RowCal[0].ToString())] = requiredBatches[int.Parse(RowCal[0].ToString())] + ((float.Parse(row[3].ToString())) / (float.Parse(RowCal[1].ToString())));
+                            j++;
+                        }
                     }
                     else if(row[2].ToString() == "KG" && lines.Contains(row[4].ToString(), StringComparer.OrdinalIgnoreCase))
                     {
@@ -132,11 +155,16 @@ namespace RDJ_Reports
                 List<string> values = new List<string>();
                 i = 0;
                 excelDataShow.Tables.Add(new System.Data.DataTable());
-                excelDataShow.Tables[0].Columns.Add("Formula Number");
-                excelDataShow.Tables[0].Columns.Add("Description");
-                excelDataShow.Tables[0].Columns.Add("Conversion");
+                if(!excelDataShow.Tables[0].Columns.Contains("Formula Number"))
+                {
+                    excelDataShow.Tables[0].Columns.Add("Formula Number");
+                    excelDataShow.Tables[0].Columns.Add("Description");
+                    excelDataShow.Tables[0].Columns.Add("Conversion");
+                    
+
+                }
                 List<DataRow> showRow = new List<DataRow>();
-                   // excelDataShow.Tables[0].NewRow()>;
+                // excelDataShow.Tables[0].NewRow()>;
 
                 foreach (KeyValuePair<int, float> item in usedBatches)
                 {
@@ -156,7 +184,7 @@ namespace RDJ_Reports
             }
             catch(Exception exception)
             {
-                errorMsg.Text = "Error in Data";
+                errorMsg.Text = "Error in Data" + exception.StackTrace;
             }
         }
     }
