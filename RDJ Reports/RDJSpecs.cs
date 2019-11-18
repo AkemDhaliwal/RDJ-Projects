@@ -6,12 +6,14 @@ namespace RDJ_Reports
     public class DisplayInfo
     {
         public int formulaNum;
-        public string productNum;
+        public int productNum;
         public float conversion;
         public string prodDescription;
-        public float finishedProd;
+        public float finishedProdAmount;
         public string finProdunits;
-        public string line;   
+        public string line;
+        public float yield;
+        public float timeOnFloor;
     }
     public class ReadRDJSpecsInfo
     {
